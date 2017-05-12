@@ -976,14 +976,16 @@ class DenseMatrix(Matrix):
             return self.values[i + j * self.numRows]
 
     def __eq__(self, other):
-        if (not isinstance(other, DenseMatrix) or
-                self.numRows != other.numRows or
-                self.numCols != other.numCols):
+
+        if isinstance(other, SparseMatrix):
+            return np.all(self.toArray() == other.toArray())
+        if (self.numRows != other.numRows or self.numCols != other.numCols):
             return False
 
         self_values = np.ravel(self.toArray(), order='F')
         other_values = np.ravel(other.toArray(), order='F')
-        return all(self_values == other_values)
+
+        return np.all(self_values == other_values)
 
 
 class SparseMatrix(Matrix):
